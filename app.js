@@ -56,11 +56,7 @@ export class ProductManager {
   async getProductById(idProduct){
     const products = await this.getProducts()
     const product = products.find( e => e.id === parseInt(idProduct) )
-    if (product) {
-      return product
-    } else {
-      return "No existe producto"
-    }
+    if (product) {return product}
   }
 
   async updateProduct(idProduct, change){
