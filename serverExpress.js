@@ -20,7 +20,7 @@ app.get('/productos', async (req, res)=>{
 app.get('/productos/:pid', async (req, res)=>{
     const {pid} = req.params
     const product = await productsManager. getProductById(pid)
-    res.send(product)
+    product ? res.send(product) : res.send({error:'Producto no existe en el inventario'})
 })
 
 
