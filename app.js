@@ -27,9 +27,10 @@ export class ProductManager {
 
 
   async addProduct(title, description, price, thumbnail, code, stock) {
+    const productData = !title || !description || !price || !thumbnail || !code || !stock
     try {
-    if(!title || !description || !price || !thumbnail || !code || !stock) {
-      return console.log('Error, product incomplete');
+    if(!productData) {
+      return console.log({error: 'Error, product incomplete'});
     } else {
         const isCode = this.#evaluarCode(code)
         if(isCode){
