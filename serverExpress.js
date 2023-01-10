@@ -4,7 +4,7 @@ const app = express()
 const productsManager = new ProductManager()
 
 
-const PORT = 3434
+const PORT = 8080
 
 
 // Rutas
