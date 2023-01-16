@@ -58,7 +58,7 @@ app.delete('/api/producto/:pid', async (req, res)=>{
 // Ruta GET de carts
 app.get('/api/carts/:pid', async (req, res)=>{
     const {pid} = req.params
-    const cart = await cartsManager.getProductById(pid)
+    const cart = await cartsManager.getCartById(pid)
     cart ? res.send(cart) : res.send({error:'Producto no existe en el inventario'})
 })
 
