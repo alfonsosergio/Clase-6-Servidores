@@ -55,12 +55,22 @@ app.delete('/api/producto/:pid', async (req, res)=>{
 
 // Ruta de carrito
 
-app.get('/api/carts', async (req, res)=>{
-    const {limit} = req.query
-    const products = await cartsManager.getProducts(limit)
-    res.json(products)
+// Ruta GET de carts
+app.get('/api/carts/:pid', async (req, res)=>{
+    const {pid} = req.params
+    const cart = await cartsManager.getProductById(pid)
+    cart ? res.send(cart) : res.send({error:'Producto no existe en el inventario'})
 })
 
+// Ruta POST de carts
+app.post('/api/carts', async (req, res)=>{
+    const obj = req.body
+    const cartsCreate = await cartsManager.addCarts(obj)
+    res.json({message:"Carrito creado", cartsCreate})
+})
+
+
+//Llamado del puerto
 app.listen(PORT, ()=>{
     console.log('Escuchando express');
 })
