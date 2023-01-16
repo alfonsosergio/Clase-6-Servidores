@@ -107,15 +107,15 @@ export class CartsManager {
     this.path = './productoslista/carts.json'
   }
 
-  async getProducts(limit){
+  async getCarts(limit){
     try{
       if(fs.existsSync(this.path)){
-        const infoProducts = await fs.promises.readFile(this.path, 'utf-8')
+        const infoCarts = await fs.promises.readFile(this.path, 'utf-8')
         if (limit === 'max') {
-          const productJS =  JSON.parse(infoProducts)
-          return productJS
+          const cartsJS =  JSON.parse(infoCarts)
+          return cartsJS
         } else {
-          return JSON.parse(infoProducts).slice(0, limit)
+          return JSON.parse(infoCarts).slice(0, limit)
         }
        
       } else {
