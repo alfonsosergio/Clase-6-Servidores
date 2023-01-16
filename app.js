@@ -142,8 +142,12 @@ export class CartsManager {
   async getCartById(idCart){
     const carts = await this.getCarts()
     const cart = carts.find( e => e.id === parseInt(idCart) )
-    const productCart = cart.products
-    return productCart
+    if (cart) {
+      const productCart = cart.products
+      return productCart
+    } 
+    
+    
   }
 
   async updateProduct(idProduct, obj){
