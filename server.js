@@ -43,6 +43,14 @@ app.put('/api/producto/:pid', async (req, res)=>{
     
 })
 
+// Ruta DELETE de producto
+app.delete('/api/producto/:pid', async (req, res)=>{
+    const {pid} = req.params
+    const product = await productsManager.deleteProduct(parseInt(pid))
+    product ? res.json({message:'Usuario eliminado con exito'}) : res.send({error:'Producto no existe en el inventario'})
+    
+})
+
 
 // Ruta de carrito
 
