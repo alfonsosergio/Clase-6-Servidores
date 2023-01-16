@@ -1,7 +1,9 @@
 import express from 'express'
 import { ProductManager } from './app.js'
+import { CartsManager } from './app.js'
 const app = express()
 const productsManager = new ProductManager()
+const cartsManager = new CartsManager()
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
@@ -14,8 +16,7 @@ const PORT = 8080
 
 // Ruta GET de productros
 app.get('/api/productos', async (req, res)=>{
-    const {limit, code} = req.query
-    console.log(code);
+    const {limit} = req.query
     const products = await productsManager.getProducts(limit)
     res.json(products)
 })
@@ -56,7 +57,7 @@ app.delete('/api/producto/:pid', async (req, res)=>{
 
 app.get('/api/carts', async (req, res)=>{
     const {limit} = req.query
-    const products = await productsManager.getProducts(limit)
+    const products = await cartsManager.getProducts(limit)
     res.json(products)
 })
 
