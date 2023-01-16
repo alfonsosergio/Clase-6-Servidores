@@ -128,24 +128,12 @@ export class CartsManager {
   }
 
 
-  async addProduct(obj) {
-    const {title, description, price, status, code, stock, category} = obj
-    const productData = title && description && price && status  && code && stock && category 
+  async addCarts(obj) {
     try {
-    if(!productData) {
-      return console.log({error: 'Error, product incomplete'});
-    } else {
-        const isCode = await this.#evaluarCode(code)
-        if(isCode){
-          console.log('That code already exist, try again')
-        } else {
-          const product = { id: await this.#generarId(), ...obj }
-          const productsArchivo = await this.getProducts()
-          productsArchivo.push(product)
-          await fs.promises.writeFile(this.path, JSON.stringify(productsArchivo))
-        } 
-
-    }
+          const carts = { id: await this.#generarId(), ...obj }
+          const cartsArchivo = await this.getCarts()
+          cartsArchivo.push(carts)
+          await fs.promises.writeFile(this.path, JSON.stringify(cartsArchivo))
     } catch(error) {
       console.log(error)
     } 
@@ -186,17 +174,11 @@ export class CartsManager {
 
 
   async #generarId() {
-    const products = await this.getProducts()
+    const carts = await this.getCarts()
     let id =
-      products.length === 0
+    carts.length === 0
         ? 1
-        : products[products.length - 1].id + 1
+        : carts[carts.length - 1].id + 1
     return id
-  }
-
-
-  async #evaluarCode(code){
-    const products = await this.getProducts()
-    return products.find(product => product.code === code)
   }
 }
