@@ -139,10 +139,11 @@ export class CartsManager {
     } 
   }
 
-  async getProductById(idProduct){
-    const products = await this.getProducts()
-    const product = products.find( e => e.id === parseInt(idProduct) )
-    return product
+  async getCartById(idCart){
+    const carts = await this.getCarts()
+    const cart = carts.find( e => e.id === parseInt(idCart) )
+    const productCart = cart.products
+    return productCart
   }
 
   async updateProduct(idProduct, obj){
