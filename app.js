@@ -11,7 +11,8 @@ export class ProductManager {
       if(fs.existsSync(this.path)){
         const infoProducts = await fs.promises.readFile(this.path, 'utf-8')
         if (limit === 'max') {
-          return JSON.parse(infoProducts)
+          const productJS =  JSON.parse(infoProducts)
+          return productJS
         } else {
           return JSON.parse(infoProducts).slice(0, limit)
         }
@@ -26,28 +27,23 @@ export class ProductManager {
   }
 
 
-  async addProduct(title, description, price, thumbnail, code, stock) {
-    const productData = !title || !description || !price || !thumbnail || !code || !stock
+  async addProduct(obj) {
+    const {title, description, price, status, code, stock, category} = obj
+    const productData = title && description && price && status  && code && stock && category 
     try {
     if(!productData) {
       return console.log({error: 'Error, product incomplete'});
     } else {
-        const isCode = this.#evaluarCode(code)
+        const isCode = await this.#evaluarCode(code)
         if(isCode){
           console.log('That code already exist, try again')
         } else {
-          const product = {
-            id: this.#generarId(), 
-            title,
-            description,
-            price,
-            thumbnail,
-            code,
-            stock,
-          }
-          this.products.push(product)
-          await fs.promises.writeFile(this.path, JSON.stringify(this.products, null, 2))
+          const product = { id: await this.#generarId(), ...obj }
+          const productsArchivo = await this.getProducts()
+          productsArchivo.push(product)
+          await fs.promises.writeFile(this.path, JSON.stringify(productsArchivo))
         } 
+
     }
     } catch(error) {
       console.log(error)
@@ -60,24 +56,18 @@ export class ProductManager {
     return product
   }
 
-  async updateProduct(idProduct, change){
-    let read = await fs.promises.readFile(this.path, 'utf-8')
-    read = JSON.parse(read)
-    let product = await this.getProductById(idProduct)
-    if(product){
-      product = {...product, ...change}
-      read = read.map(prod => {
-        if(prod.id == product.id){
-          prod = product
-        }
-        return prod
-      })
-      read = JSON.stringify(read, null, 2)
-      await fs.promises.writeFile(this.path, read)
-      console.log(JSON.parse(read))
-      return read
-    }else{
-      return null
+  async updateProduct(idProduct, obj){
+    try {
+      const productosArchivo = await this.getProducts()
+      const indexProduct = productosArchivo.findIndex((u) => u.id === idProduct)
+      console.log(indexProduct);
+      if (indexProduct === -1) return
+      const productActualizado = { ...productosArchivo[indexProduct], ...obj }
+      productosArchivo.splice(indexProduct, 1, productActualizado)
+      await fs.promises.writeFile(this.path, JSON.stringify(productosArchivo))
+      return productosArchivo
+    } catch (error) {
+      return error
     }
   }
 
@@ -93,18 +83,18 @@ export class ProductManager {
   }
 
 
-  #generarId() {
+  async #generarId() {
+    const products = await this.getProducts()
     let id =
-      this.products.length === 0
+      products.length === 0
         ? 1
-        : this.products[this.products.length - 1].id + 1
+        : products[products.length - 1].id + 1
     return id
   }
 
 
-  #evaluarCode(code){
-    return this.products.find(product => product.code === code)
+  async #evaluarCode(code){
+    const products = await this.getProducts()
+    return products.find(product => product.code === code)
   }
 }
-
-
