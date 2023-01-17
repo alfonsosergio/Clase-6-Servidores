@@ -56,9 +56,9 @@ app.delete('/api/producto/:pid', async (req, res)=>{
 // Ruta de carrito
 
 // Ruta GET de carts
-app.get('/api/carts/:pid', async (req, res)=>{
-    const {pid} = req.params
-    const cart = await cartsManager.getCartById(pid)
+app.get('/api/carts/:cid', async (req, res)=>{
+    const {cid} = req.params
+    const cart = await cartsManager.getCartById(cid)
     cart ? res.send(cart) : res.send({error:'Carrito no existe'})
 })
 
@@ -69,9 +69,17 @@ app.post('/api/carts', async (req, res)=>{
     res.json({message:"Carrito creado", cartsCreate})
 })
 
+app.post('/api/carts/:cid/product/:pid', async (req, res)=>{
+    const {cid, pid} = req.params
+    const obj = req.body
+    const cartsCreate = await cartsManager.addCartsProduct(cid, pid, obj)
+    res.json({message:"Porducto agregado a carrito", cartsCreate})
+})
+
 
 //Llamado del puerto
 app.listen(PORT, ()=>{
     console.log('Escuchando express');
 })
 
+ 
